@@ -1,43 +1,85 @@
+/* Navigation component styles */
+
 .nav {
-  background: linear-gradient(3.95deg, #101014 3.44%, rgba(0, 0, 0, 0) 174.43%),
-    linear-gradient(
-      270deg,
-      #208f68 0.7%,
-      #27336a 24.96%,
-      #0c0310 50.78%,
-      #370c4d 76.47%,
-      #95125c 100%
-    );
-  color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: var(--dg-space-2) 0;
+    z-index: var(--dg-z-sticky);
+    background-color: rgba(11, 11, 12, 0.75);
+    border-bottom: var(--dg-border-width-thin) solid var(--dg-pebble);
+    backdrop-filter: blur(4px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    transition: all var(--dg-transition-normal);
 }
 
-.nav-margin {
-  height: 100px;
-  max-width: 1536px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
-  align-content: stretch;
-  padding-left: 2rem;
-  padding-right: 2rem;
+.container {
+    max-width: var(--dg-container-max-width);
+    margin: 0 auto;
+    padding: var(--dg-space-3) var(--dg-space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--dg-space-24);
 }
 
-.nav-logo {
-  display: inline;
-  height: 2rem;
-  margin-bottom: -5px;
-  margin-right: 1rem;
+@media (min-width: 640px) {
+    .container {
+        padding: var(--dg-space-4) var(--dg-space-8);
+        gap: var(--dg-space-20);
+    }
 }
 
-.nav-heading {
-  display: inline;
+@media (min-width: 1024px) {
+    .container {
+        padding: var(--dg-space-4) var(--dg-space-10);
+        gap: var(--dg-space-24);
+    }
 }
 
-.nav-brand {
-  color: white;
-  align-items: center;
-  display: flex;
-  height: 4rem;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--dg-space-3);
+    text-decoration: none;
+    transition: opacity var(--dg-transition-normal);
+    flex-shrink: 0;
+}
+
+.logo:hover {
+    opacity: 0.8;
+}
+
+.logoImage {
+    height: 24px;
+    width: auto;
+    display: block;
+}
+
+@media (max-width: 640px) {
+    .logoImage {
+        height: 20px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .logoImage {
+        height: 28px;
+    }
+}
+
+.logoText {
+    font-family: var(--font-noto);
+    font-size: var(--dg-text-lg);
+    font-weight: var(--dg-font-weight-semibold);
+    color: var(--dg-text-primary);
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .logoText {
+        display: none;
+    }
 }
