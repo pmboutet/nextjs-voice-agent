@@ -1,17 +1,18 @@
 [meta]
-  title = "Next.js Voice Agent Starter" # update with usecase and framework
-  description = "Get started using Deepgram's Voice Agent API with this JavaScript/Next.js demo app" # update with usecase and framework
-  author = "Deepgram DX Team <devrel@deepgram.com> (https://developers.deepgram.com)" # update for author details
-  useCase = "Agent" # usecase
-  language = "JavaScript" # base language
-  framework = "Next.js" # framework if not native
+title = "Next.js Voice Agent Starter"
+description = "Get started using Deepgram's Voice Agent API with this Next.js demo app"
+author = "Deepgram DX Team <devrel@deepgram.com> (https://developers.deepgram.com)"
+useCase = "Agent"
+language = "TypeScript"
+framework = "Next.js"
+sdk = "3.8.12"
 
-[build] # delete if no build/install steps applicable
-  command = "npm install" # automatically install dependencies, delete if not applicable
+[build]
+command = "npm install"
 
 [config]
-  sample = "sample.env" # the example config file
-  output = ".env" # the file that we will generate using their API
+sample = "sample.env"
+output = ".env"
 
 [post-build]
-  message = "Run `npm run dev` to get up and running." # message to give users once setup is complete
+message = "Run `npm start` to start the web server."

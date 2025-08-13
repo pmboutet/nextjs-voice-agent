@@ -60,40 +60,40 @@ export const Body = () => {
             return;
         }
 
-        const client = new DeepgramClient({accessToken: token}).agent();
+        const client = new DeepgramClient({ accessToken: token }).agent();
         setClient(client);
         client.once(AgentEvents.Welcome, () => {
             console.log("Connected to Deepgram agent.");
             const settings = {
-            audio: {
-                output: {
-                    encoding: "linear16",
-                    container: "none",
-                    sample_rate: 16000,
-                }
-            },
-            agent: {
-                greeting: "Welcome to the Next.js Voice Agent Demo. How can I assist you today?",
-                listen: {
-                    provider: {
-                        type: "deepgram",
-                        model: listenModel,
+                audio: {
+                    output: {
+                        encoding: "linear16",
+                        container: "none",
+                        sample_rate: 16000,
                     }
                 },
-                speak: {
-                    provider: {
-                        type: "deepgram",
-                        model: speechModel
-                    }
-                },
-                think: {
-                    provider: {
-                        type: thinkModel === ThinkModel.Claude ? "anthropic" : "open_ai",
-                        model: thinkModel
+                agent: {
+                    greeting: "Welcome to the Next.js Voice Agent Demo. How can I assist you today?",
+                    listen: {
+                        provider: {
+                            type: "deepgram",
+                            model: listenModel,
+                        }
+                    },
+                    speak: {
+                        provider: {
+                            type: "deepgram",
+                            model: speechModel
+                        }
+                    },
+                    think: {
+                        provider: {
+                            type: thinkModel === ThinkModel.Claude ? "anthropic" : "open_ai",
+                            model: thinkModel
+                        }
                     }
                 }
             }
-        }
             console.log("Applying agent settings:", settings);
             client.configure(settings)
         })
@@ -114,17 +114,17 @@ export const Body = () => {
         })
         client.on(AgentEvents.AgentAudioDone, async () => {
             const audioContext = new AudioContext();
-            const blob = new Blob(audioBuffer, { type: "audio/wav" });
+            const blob = new Blob(audioBuffer.map(chunk => new Uint8Array(chunk)), { type: "audio/wav" });
             const arrayBuffer = await blob.arrayBuffer();
             audioContext.decodeAudioData(arrayBuffer, (buffer) => {
-            const source = audioContext.createBufferSource();
-            source.buffer = buffer;
-            source.connect(audioContext.destination);
-            source.start(0);
-            source.onended = () => {
-                console.log("Audio playback finished.");
-                audioBuffer = [new Uint8Array([82, 73, 70, 70, 0, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32])]; // Reset audio buffer
-            }
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.start(0);
+                source.onended = () => {
+                    console.log("Audio playback finished.");
+                    audioBuffer = [new Uint8Array([82, 73, 70, 70, 0, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32])]; // Reset audio buffer
+                }
             }, (decodeError) => {
                 setError(`Error decoding audio: ${decodeError.message}`);
             });
@@ -136,61 +136,61 @@ export const Body = () => {
 
 
 
-   
-  return (
-    <main className={Styles.body}>
-        {error && <div className={Styles.error}>{error}</div>}
-        <Mic state={micState} />
-        { !token && (
-            <button className={Styles.connectButton} onClick={authenticate}>
-                Authenticate
-            </button>
-        )}
-        { token && !connected && (
-            <form>
-            <h2 className={Styles.heading}>Configuration</h2>
-            <label>
-                Listen Model:
-                <select name="listen" value={listenModel} onChange={(e) => setListenModel(e.target.value as ListenModel)}>
-                    <option value={ListenModel.General}>General Purpose</option>
-                    <option value={ListenModel.Medical}>Medical</option>
-                </select>
-            </label>
-            <label>
-                Think Model:
-                <select name="think" value={thinkModel} onChange={(e) => setThinkModel(e.target.value as ThinkModel)}>
-                    <option value={ThinkModel.Claude}>Claude</option>
-                    <option value={ThinkModel.GPT}>GPT</option>
-                </select>
-            </label>
-            <label>
-                Speech Model:
-                <select name="speech" value={speechModel} onChange={(e) => setSpeechModel(e.target.value as SpeechModel)}>
-                    <option value={SpeechModel.Thalia}>Thalia</option>
-                    <option value={SpeechModel.Andromeda}>Andromeda</option>
-                    <option value={SpeechModel.Helena}>Helena</option>
-                    <option value={SpeechModel.Apollo}>Apollo</option>
-                    <option value={SpeechModel.Arcas}>Arcas</option>
-                    <option value={SpeechModel.Aries}>Aries</option>
-                </select>
-            </label>
-            <button type="button" onClick={connect}>Connect</button>
-        </form>
-        )}
-        { connected && (
-            <>
-            <button className={Styles.connectButton} onClick={disconnect}>
-                Disconnect
-            </button>
-            <h2>Transcript</h2>
-            <ul>
-                {transcript.map((text, index) => (
-                    <li key={index}>{text}</li>
-                ))}
-            </ul>
-            </>
-        )}
 
-    </main>
-  );
+    return (
+        <main className={Styles.body}>
+            {error && <div className={Styles.error}>{error}</div>}
+            <Mic state={micState} />
+            {!token && (
+                <button className={Styles.connectButton} onClick={authenticate}>
+                    Authenticate
+                </button>
+            )}
+            {token && !connected && (
+                <form>
+                    <h2 className={Styles.heading}>Configuration</h2>
+                    <label>
+                        Listen Model:
+                        <select name="listen" value={listenModel} onChange={(e) => setListenModel(e.target.value as ListenModel)}>
+                            <option value={ListenModel.General}>General Purpose</option>
+                            <option value={ListenModel.Medical}>Medical</option>
+                        </select>
+                    </label>
+                    <label>
+                        Think Model:
+                        <select name="think" value={thinkModel} onChange={(e) => setThinkModel(e.target.value as ThinkModel)}>
+                            <option value={ThinkModel.Claude}>Claude</option>
+                            <option value={ThinkModel.GPT}>GPT</option>
+                        </select>
+                    </label>
+                    <label>
+                        Speech Model:
+                        <select name="speech" value={speechModel} onChange={(e) => setSpeechModel(e.target.value as SpeechModel)}>
+                            <option value={SpeechModel.Thalia}>Thalia</option>
+                            <option value={SpeechModel.Andromeda}>Andromeda</option>
+                            <option value={SpeechModel.Helena}>Helena</option>
+                            <option value={SpeechModel.Apollo}>Apollo</option>
+                            <option value={SpeechModel.Arcas}>Arcas</option>
+                            <option value={SpeechModel.Aries}>Aries</option>
+                        </select>
+                    </label>
+                    <button type="button" onClick={connect}>Connect</button>
+                </form>
+            )}
+            {connected && (
+                <>
+                    <button className={Styles.connectButton} onClick={disconnect}>
+                        Disconnect
+                    </button>
+                    <h2>Transcript</h2>
+                    <ul>
+                        {transcript.map((text, index) => (
+                            <li key={index}>{text}</li>
+                        ))}
+                    </ul>
+                </>
+            )}
+
+        </main>
+    );
 }

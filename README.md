@@ -1,87 +1,108 @@
-> INSTRUCTIONS
+# Next.js Voice Agent Starter
 
-> 1. If your app requires an UI: Copy the entire contents of https://github.com/deepgram-starters/deepgram-starters-ui to the `./static/` folder.
-
-> 2. The configuration of the `deepgram.toml` file, is required so we can include the starter in future onboarding workflows.
-
-> 3. Consistent naming of the project repo is important. Please don't deviate from our standards. Example repo name: [language] [use case] 
-
-> 4. Use the readme template below, don't deviate from it.
-
-> 5. Use the [cursor rules](./.cursor/rules) with [Cursor](https://www.cursor.com/) to help build your starter more quickly!
----
-
-# [Language] [Usecase] Starter
-
-> Write a brief intro for this project.
+Start building interactive voice experiences with Deepgram's Voice Agent API using Python Flask starter application. This project demonstrates how to create a voice agent that can engage in natural conversations using Deepgram's advanced AI capabilities.
 
 ## What is Deepgram?
-> Please leave this section unchanged.
 
-[Deepgram’s](https://deepgram.com/) voice AI platform provides APIs for speech-to-text, text-to-speech, and full speech-to-speech voice agents. Over 200,000+ developers use Deepgram to build voice AI products and features.
+[Deepgram's](https://deepgram.com/) voice AI platform provides APIs for speech-to-text, text-to-speech, and full speech-to-speech voice agents. Over 200,000+ developers use Deepgram to build voice AI products and features.
+
 
 ## Sign-up to Deepgram
 
-> Please leave this section unchanged, unless providing a UTM on the URL.
-
 Before you start, it's essential to generate a Deepgram API key to use in this project. [Sign-up now for Deepgram and create an API key](https://console.deepgram.com/signup?jump=keys).
+
+## Prerequisites
+
+Before you start, you'll need:
+- Node.js (version 18 or higher)
+- npm or yarn package manager
+- A Deepgram API key ([Sign-up now for Deepgram](https://console.deepgram.com/signup?jump=keys))
 
 ## Quickstart
 
-> Detail the manual steps to get started.
-
-e.g.
-
-### Manual
+### Manual Setup
 
 Follow these steps to get started with this starter application.
 
 #### Clone the repository
 
-Go to GitHub and [clone the repository](https://github.com/deepgram-starters/prerecorded-node-starter).
+Go to GitHub and [clone the repository](https://github.com/deepgram-starters/nextjs-voice-agent-starter.git).
 
 #### Install dependencies
 
-Install the project dependencies.
+Install the project dependencies:
 
 ```bash
 npm install
 ```
 
-#### Edit the config file
+#### Configure your environment
 
-> Config file can be any appropriate file for the framework/language. For e.g.
-> Node is using a config.json file, while Python is only use .env files
+Create a `.env` file by copying the contents from `sample.env`:
 
-Copy the code from `sample.env` and create a new file called `.env`. Paste in the code and enter your API key you generated in the [Deepgram console](https://console.deepgram.com/).
-
-```json
-DEEPGRAM_API_KEY=%api_key%
+```bash
+cp sample.env .env
 ```
+
+Then edit the `.env` file and replace the placeholder with your actual Deepgram API key:
+
+```bash
+DEEPGRAM_API_KEY=your_deepgram_api_key_here
+```
+
+You can get your API key from the [Deepgram Console](https://console.deepgram.com/).
 
 #### Run the application
 
-> If your starter has a UI, it must always run on port 8080
+There are two ways to run this starter application:
 
-The `dev` script will run a web and API server concurrently. Once running, you can [access the application in your browser](http://localhost:8080/).
-
+**Development Mode:**
 ```bash
-npm start
+npm run dev
 ```
 
-## Issue Reporting
+**Web Server Mode:**
+```bash
+npm run start
+```
 
-If you have found a bug or if you have a feature request, please report them at this repository issues section. Please do not report security vulnerabilities on the public GitHub issue tracker. The [Security Policy](./SECURITY.md) details the procedure for contacting Deepgram.
+Once running, you can access the application in your browser at `http://localhost:3000` (development) or the port specified for server mode.
 
+- Allow microphone access when prompted.
+- Speak into your microphone to interact with the Deepgram Voice Agent.
+- You should hear the agent's responses played back in your browser.
+
+### Using the `app-requirements.mdc` File
+
+1. Clone or Fork this repo.
+2. Modify the `app-requirements.mdc`
+3. Add the necessary configuration settings in the file.
+4. You can refer to the MDC file used to help build this starter application by reviewing  [app-requirements.mdc](.cursor/rules/app-requirements.mdc)
+
+## Testing
+
+```bash
+@TODO
+```
 ## Getting Help
 
 We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
 
-> be sure to set the repo-name in the issue URL.
-
-- [Open an issue in this repository](https://github.com/deepgram-starters/{repo-name]/issues/new)
+- [Open an issue in this repository](https://github.com/deepgram-starters/nextjs-voice-agent-starter/issues/new)
 - [Join the Deepgram Github Discussions Community](https://github.com/orgs/deepgram/discussions)
-- [Join the Deepgram Discord Community](https://discord.gg/xWRaCDBtW4)
+- [Join the Deepgram Discord Community](https://discord.gg/deepgram)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](./CONTRIBUTING.md) for details on how to get started.
+
+## Security
+
+For security concerns and vulnerability reporting, please refer to our [Security Policy](./SECURITY.md).
+
+## Code of Conduct
+
+This project adheres to the Deepgram [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## Author
 
