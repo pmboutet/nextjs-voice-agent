@@ -3,7 +3,7 @@ import { DeepgramClient, type AgentLiveClient } from "@deepgram/sdk";
 class DeepgramAgent {
     private static instance: DeepgramAgent | null = null;
 
-    private agentClient: AgentLiveClient| null = null;
+    private agentClient: AgentLiveClient | null = null;
 
     private apiKey: string | null = null;
 
@@ -35,7 +35,7 @@ class DeepgramAgent {
     }
 }
 
-export const getDeepgramClient = (apiKey: string): DeepgramClient | null => {
+export const getDeepgramClient = (apiKey: string): AgentLiveClient | null => {
     const deepgram = DeepgramAgent.getInstance();
     deepgram.setApiKey(apiKey);
     return deepgram.getClient();
