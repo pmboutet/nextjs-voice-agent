@@ -4,18 +4,23 @@ globs: index.ts, src/
 alwaysApply: false
 ---
 
-# {typescript / javascript / next.js} Starter App Requirements
+#  Next.js Voice Agent Starter App Requirements
 
+## Existing Code In Project
+- CONSIDER existing code that was already produced and refactor where necessary.
+- Should not use React, we prefer Vanilla.JS
 
 ## Core Requirements
 - SHOULD live in a single file with minimal dependencies, i.e. `index.ts`
-- SHOULD use typescript not javascript
+- SHOULD use typescript not javascript for server
+- SHOULD use Vanilla JS for UI where applicable
+
 - SHOULD run on next.js
-- SHOULD use the latest version of the official SDK where provided
+- SHOULD be deployable on next.js
+- SHOULD use the latest version of the official Deepgram SDK
 - MUST falls back to manual integration using the API spec where there is no SDK
 - MUST run in a terminal
 - MUST be usable in command line with a single command
-- MUST be able to run it with `--serve` flag that will start it as a http server
 - MUST get API keys and other sensitive config from a `.env` file
 - MUST provide help code comments explaining the main sections of the app
 
