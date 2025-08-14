@@ -18,6 +18,9 @@ export const Mic = ({ state, client, onError }: MicProps) => {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const isRecordingRef = useRef(false);
 
+  // Firefox detection
+  const isFirefox = typeof window !== 'undefined' && navigator.userAgent.includes('Firefox');
+
   // === RECORDING CONTROL ===
   const startRecording = useCallback(async () => {
     try {
@@ -144,6 +147,14 @@ export const Mic = ({ state, client, onError }: MicProps) => {
     return (
       <div className="dg-status dg-status--info">
         🔇 Microphone disconnected
+      </div>
+    );
+  }
+
+  if (isFirefox) {
+    return (
+      <div className="dg-status dg-status--warning">
+        ⚠️ Firefox has microphone compatibility issues. Please try Chrome or Safari for best results.
       </div>
     );
   }
