@@ -18,7 +18,7 @@ export const Mic = ({ state, client, onError }: MicProps) => {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const isRecordingRef = useRef(false);
 
-  // Simple Firefox detection
+  // Firefox detection
   const isFirefox = typeof window !== 'undefined' && navigator.userAgent.includes('Firefox');
 
   // === RECORDING CONTROL ===
@@ -151,7 +151,6 @@ export const Mic = ({ state, client, onError }: MicProps) => {
     );
   }
 
-  // Firefox warning
   if (isFirefox) {
     return (
       <div className="dg-status dg-status--warning">
