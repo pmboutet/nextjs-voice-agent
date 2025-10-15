@@ -1,0 +1,11 @@
+<svg width="180" height="44" viewBox="0 0 180 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="180" height="44" rx="22" fill="#009639"/>
+  <g transform="translate(20 9)">
+    <path d="M23.5 0C14.939 0 8 6.939 8 15.5C8 24.061 14.939 31 23.5 31C32.061 31 39 24.061 39 15.5C39 6.939 32.061 0 23.5 0ZM23.5 4C29.851 4 35 9.149 35 15.5C35 21.851 29.851 27 23.5 27C17.149 27 12 21.851 12 15.5C12 9.149 17.149 4 23.5 4Z" fill="white"/>
+    <path d="M22 8.5C22 7.672 22.672 7 23.5 7C24.328 7 25 7.672 25 8.5V13H29.5C30.328 13 31 13.672 31 14.5C31 15.328 30.328 16 29.5 16H25V20.5C25 21.328 24.328 22 23.5 22C22.672 22 22 21.328 22 20.5V16H17.5C16.672 16 16 15.328 16 14.5C16 13.672 16.672 13 17.5 13H22V8.5Z" fill="white"/>
+  </g>
+  <g fill="white" font-family="'Noto Sans', 'Segoe UI', sans-serif">
+    <text x="78" y="21" font-size="16" font-weight="700" letter-spacing="0.02em">Nuffield</text>
+    <text x="78" y="33" font-size="16" font-weight="700" letter-spacing="0.02em">Health</text>
+  </g>
+</svg>

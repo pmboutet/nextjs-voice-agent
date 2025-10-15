@@ -310,40 +310,30 @@ export const Body = () => {
 
     // === UI RENDER ===
     return (
-        <main className="dg-section dg-text-center">
-            <div className="dg-hero-title">
-                Nuffield Health Voice Agent
-            </div>
+        <main className={styles.main}>
+            <div className={styles.container}>
+                {error && (
+                    <div className={styles.error}>
+                        {error}
+                    </div>
+                )}
 
-            {error && (
-                <div className="dg-status dg-status--error">
-                    {error}
-                </div>
-            )}
+                {!token && (
+                    <section className={styles.panel}>
+                        <div className={styles.authActions}>
+                            <button className={styles.primaryButton} onClick={authenticate}>
+                                Authenticate
+                            </button>
+                        </div>
+                    </section>
+                )}
 
-            <Mic state={micState} client={client} onError={setError} />
-
-            {!token && (
-                <div className="dg-card">
-                    <h2 className="dg-section-heading">Welcome</h2>
-                    <p className="dg-status dg-status--info">
-                        Click the button below to authenticate and start your voice conversation with the Nuffield experience.
-                    </p>
-                    <button className="btn btn--primary btn--large" onClick={authenticate}>
-                        🔐 Authenticate
-                    </button>
-                </div>
-            )}
-
-            {token && !connected && (
-                <div className="dg-card">
-                    <h2 className="dg-section-heading">Agent Configuration</h2>
-                    <form className="form">
-                        <div className="form__group">
+                {token && !connected && (
+                    <section className={styles.panel}>
+                        <form className={styles.form}>
                             <label>
-                                <span>Listen Model:</span>
+                                Listen
                                 <select
-                                    className="form__input"
                                     name="listen"
                                     value={listenModel}
                                     onChange={(e) => setListenModel(e.target.value as ListenModel)}
@@ -352,12 +342,9 @@ export const Body = () => {
                                     <option value={ListenModel.Medical}>Medical</option>
                                 </select>
                             </label>
-                        </div>
-                        <div className="form__group">
                             <label>
-                                <span>Think Model:</span>
+                                Think
                                 <select
-                                    className="form__input"
                                     name="think"
                                     value={thinkModel}
                                     onChange={(e) => setThinkModel(e.target.value as ThinkModel)}
@@ -366,12 +353,9 @@ export const Body = () => {
                                     <option value={ThinkModel.GPT}>GPT</option>
                                 </select>
                             </label>
-                        </div>
-                        <div className="form__group">
                             <label>
-                                <span>Speech Model:</span>
+                                Voice
                                 <select
-                                    className="form__input"
                                     name="speech"
                                     value={speechModel}
                                     onChange={(e) => setSpeechModel(e.target.value as SpeechModel)}
@@ -384,55 +368,50 @@ export const Body = () => {
                                     <option value={SpeechModel.Aries}>Aries</option>
                                 </select>
                             </label>
-                        </div>
-                        <div className="form__group">
-                            <button className="btn btn--primary btn--large" type="button" onClick={connect}>
-                                🚀 Connect to Agent
+                            <button type="button" onClick={connect}>
+                                Connect
+                            </button>
+                        </form>
+                    </section>
+                )}
+
+                {connected && (
+                    <section className={styles.chatPanel}>
+                        <div className={styles.toolbar}>
+                            <Mic state={micState} client={client} onError={setError} />
+                            <button
+                                type="button"
+                                className={styles.iconButton}
+                                onClick={disconnect}
+                                aria-label="Disconnect session"
+                            >
+                                ⏼
                             </button>
                         </div>
-                    </form>
-                </div>
-            )}
-
-            {connected && (
-                <>
-                    <div className="dg-card">
-                        <h2 className="dg-section-heading">Voice Agent Connected</h2>
-                        <div className={`dg-status ${isAgentSpeaking ? 'dg-status--primary' : 'dg-status--success'}`}>
-                            {isAgentSpeaking ? '🔊 Agent is speaking...' : '✅ Ready for conversation'}
-                        </div>
-                        <button className="btn btn--secondary" onClick={disconnect}>
-                            🔌 Disconnect
-                        </button>
-                    </div>
-
-                    <div className="dg-card">
-                        <h2 className="dg-section-heading">Conversation Timeline</h2>
-                        <div className={styles.conversationOuter}>
-                            <div className={styles.conversationInner}>
+                        <div className={styles.messagesOuter}>
+                            <div className={styles.messagesInner}>
                                 {transcript.length === 0 ? (
-                                    <div className={styles.emptyState}>
-                                        <em>Conversation will appear here...</em>
+                                    <div className={styles.empty}>
+                                        Messages will appear here
                                     </div>
                                 ) : (
                                     transcript.map((message, index) => (
                                         <div
                                             key={index}
-                                            className={`${styles.message} ${message.role === 'user' ? styles.messageUser : styles.messageAgent}`}
+                                            className={`${styles.bubble} ${message.role === 'user' ? styles.user : styles.agent}`}
                                         >
-                                            <span className={styles.messageLabel}>
-                                                {message.role === 'user' ? '🗣️ You' : '🤖 Assistant'}
+                                            <span className={styles.label}>
+                                                {message.role === 'user' ? 'You' : 'Assistant'}
                                             </span>
-                                            <div className={styles.messageText}>{message.content}</div>
+                                            <div className={styles.text}>{message.content}</div>
                                         </div>
                                     ))
                                 )}
                             </div>
                         </div>
-                    </div>
-                </>
-            )}
-
+                    </section>
+                )}
+            </div>
         </main>
     );
 }

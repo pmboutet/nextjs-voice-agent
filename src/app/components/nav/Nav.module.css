@@ -21,8 +21,7 @@
     padding: var(--dg-space-3) var(--dg-space-6);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--dg-space-24);
+    justify-content: center;
 }
 
 @media (min-width: 640px) {
@@ -40,16 +39,14 @@
 }
 
 .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: var(--dg-space-3);
     text-decoration: none;
     transition: opacity var(--dg-transition-normal);
-    flex-shrink: 0;
 }
 
 .logo:hover {
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .logoImage {
@@ -67,19 +64,5 @@
 @media (min-width: 1024px) {
     .logoImage {
         height: 36px;
-    }
-}
-
-.logoText {
-    font-family: var(--font-noto);
-    font-size: var(--dg-text-lg);
-    font-weight: var(--dg-font-weight-semibold);
-    color: var(--dg-text-primary);
-    margin: 0;
-}
-
-@media (max-width: 640px) {
-    .logoText {
-        display: none;
     }
 }

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { type AgentLiveClient } from "@deepgram/sdk";
 import { voiceAgentLog } from "@/app/lib/Logger";
+import styles from "./Mic.module.css";
 
 interface MicProps {
   state: "open" | "closed" | "loading";
@@ -184,29 +185,36 @@ export const Mic = ({ state, client, onError }: MicProps) => {
 
   if (state === "loading") {
     return (
-      <div className="dg-status dg-status--warning">
-        🎤 Loading microphone...
-      </div>
+      <div
+        className={`${styles.indicator} ${styles.loading}`}
+        role="status"
+        aria-live="polite"
+        aria-label="Microphone loading"
+      />
     );
   }
 
   if (state === "closed") {
     return (
-      <div className="dg-status dg-status--info">
-        🔇 Microphone disconnected
+      <div
+        className={`${styles.indicator} ${styles.muted}`}
+        role="status"
+        aria-live="polite"
+        aria-label="Microphone disconnected"
+      >
+        <span className={styles.dot} />
       </div>
     );
   }
 
-
-
   return (
-    <div className={`dg-status ${isRecording ? 'dg-status--success' : 'dg-status--primary'}`}>
-      {isRecording ? (
-        <>🎙️ Streaming audio to agent ({isFirefox ? '48kHz' : '24kHz'} linear16)</>
-      ) : (
-        <>🎤 Microphone ready for real-time streaming</>
-      )}
+    <div
+      className={`${styles.indicator} ${isRecording ? styles.live : styles.idle}`}
+      role="status"
+      aria-live="polite"
+      aria-label={isRecording ? `Microphone live at ${isFirefox ? '48' : '24'}kHz` : "Microphone ready"}
+    >
+      <span className={styles.dot} />
     </div>
   );
 };
