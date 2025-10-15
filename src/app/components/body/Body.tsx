@@ -55,11 +55,13 @@ export const Body = () => {
     const [error, setError] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
+    const [isAuthenticating, setIsAuthenticating] = useState<boolean>(true);
+    const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
     // Agent configuration
-    const [listenModel, setListenModel] = useState<ListenModel>(ListenModel.General);
-    const [thinkModel, setThinkModel] = useState<ThinkModel>(ThinkModel.Claude);
-    const [speechModel, setSpeechModel] = useState<SpeechModel>(SpeechModel.Thalia);
+    const listenModel = ListenModel.General;
+    const thinkModel = ThinkModel.Claude;
+    const speechModel = SpeechModel.Thalia;
 
     // Client and conversation state
     const [client, setClient] = useState<AgentLiveClient | null>(null);
@@ -74,9 +76,10 @@ export const Body = () => {
     const audioQueueRef = useRef<Uint8Array[]>([]);
     const isPausedRef = useRef<boolean>(false);
     const seenImagesRef = useRef<Set<string>>(new Set());
+    const isAuthenticatingRef = useRef<boolean>(false);
 
     // Initialize or get audio context
-    const getAudioContext = async (): Promise<AudioContext> => {
+    const getAudioContext = useCallback(async (): Promise<AudioContext> => {
         if (!audioContextRef.current) {
             audioContextRef.current = new AudioContext();
             console.log("🔊 AUDIO: Created new AudioContext");
@@ -89,7 +92,7 @@ export const Body = () => {
         }
 
         return audioContextRef.current;
-    };
+    }, []);
 
     // Stop any currently playing audio
     const stopCurrentAudio = () => {
@@ -107,8 +110,15 @@ export const Body = () => {
     };
 
     // === AUTHENTICATION ===
-    const authenticate = () => {
+    const authenticate = useCallback(() => {
+        if (isAuthenticatingRef.current) {
+            return;
+        }
+
         voiceAgentLog.auth("Starting authentication process...");
+        isAuthenticatingRef.current = true;
+        setIsAuthenticating(true);
+        setError(null);
         fetch("/api/token", {
             method: "GET",
             headers: {
@@ -127,8 +137,11 @@ export const Body = () => {
         }).catch((error) => {
             voiceAgentLog.error(`Authentication failed: ${error.message}`);
             setError(`Authentication failed: ${error.message}`);
-        })
-    }
+        }).finally(() => {
+            setIsAuthenticating(false);
+            isAuthenticatingRef.current = false;
+        });
+    }, []);
 
     // === CONNECTION MANAGEMENT ===
     const disconnect = () => {
@@ -164,6 +177,9 @@ export const Body = () => {
         setError(null);
         setTranscript([]);
         setIsPaused(false);
+        setIsConnecting(false);
+        setIsAuthenticating(true);
+        isAuthenticatingRef.current = false;
         seenImagesRef.current.clear();
 
         // Clear audio queue and reset timing
@@ -173,12 +189,18 @@ export const Body = () => {
         console.log("🧹 CLEANUP: All state cleared, ready for new connection");
     }
 
-    const connect = () => {
+    const connect = useCallback(() => {
+        if (isConnecting) {
+            return;
+        }
+
         if (!token) {
             setError("No token available. Please authenticate first.");
             return;
         }
 
+        setIsConnecting(true);
+        setError(null);
         voiceAgentLog.connection("Creating Deepgram Agent client...");
         const client = new DeepgramClient({ accessToken: token }).agent();
         setClient(client);
@@ -228,6 +250,7 @@ export const Body = () => {
             voiceAgentLog.agentEvent("SettingsApplied - Configuration successful", appliedSettings);
             setConnected(true);
             setMicState("open");
+            setIsConnecting(false);
 
             // Initialize audio context for immediate playback readiness
             getAudioContext().then(() => {
@@ -251,6 +274,14 @@ export const Body = () => {
         client.on(AgentEvents.Error, (error) => {
             voiceAgentLog.error("Agent error occurred", error);
             setError(`Agent error: ${error.message}`);
+            setIsConnecting(false);
+            setConnected(false);
+            try {
+                client.disconnect();
+            } catch (disconnectError) {
+                console.error("❌ DISCONNECT ERROR AFTER AGENT FAILURE:", disconnectError);
+            }
+            setClient(null);
         })
         client.on(AgentEvents.Audio, async (audio: Uint8Array) => {
             voiceAgentLog.audio(`Audio chunk received: ${audio.length} bytes`);
@@ -356,8 +387,11 @@ export const Body = () => {
 
         client.on(AgentEvents.Close, (closeEvent) => {
             voiceAgentLog.connection("Agent connection closed", closeEvent);
+            setIsConnecting(false);
+            setConnected(false);
+            setClient(null);
         });
-    }
+    }, [token, isConnecting, listenModel, speechModel, thinkModel, getAudioContext]);
 
     const togglePause = useCallback(async () => {
         const audioContext = audioContextRef.current;
@@ -383,6 +417,18 @@ export const Body = () => {
     useEffect(() => {
         isPausedRef.current = isPaused;
     }, [isPaused]);
+
+    useEffect(() => {
+        if (!token && !error && !isAuthenticatingRef.current) {
+            authenticate();
+        }
+    }, [token, error, authenticate]);
+
+    useEffect(() => {
+        if (token && !connected && !isConnecting && !error) {
+            connect();
+        }
+    }, [token, connected, isConnecting, error, connect]);
 
     useEffect(() => {
         if (!connected) {
@@ -422,58 +468,31 @@ export const Body = () => {
 
                 {!token && (
                     <section className={styles.panel}>
-                        <div className={styles.authActions}>
-                            <button className={styles.primaryButton} onClick={authenticate}>
-                                Authenticate
-                            </button>
+                        <div className={styles.statusMessage}>
+                            {isAuthenticating ? "Authenticating with Deepgram…" : "Authentication required"}
                         </div>
+                        {!isAuthenticating && (
+                            <div className={styles.authActions}>
+                                <button className={styles.primaryButton} onClick={authenticate}>
+                                    Retry Authentication
+                                </button>
+                            </div>
+                        )}
                     </section>
                 )}
 
                 {token && !connected && (
                     <section className={styles.panel}>
-                        <form className={styles.form}>
-                            <label>
-                                Listen
-                                <select
-                                    name="listen"
-                                    value={listenModel}
-                                    onChange={(e) => setListenModel(e.target.value as ListenModel)}
-                                >
-                                    <option value={ListenModel.General}>General Purpose</option>
-                                    <option value={ListenModel.Medical}>Medical</option>
-                                </select>
-                            </label>
-                            <label>
-                                Think
-                                <select
-                                    name="think"
-                                    value={thinkModel}
-                                    onChange={(e) => setThinkModel(e.target.value as ThinkModel)}
-                                >
-                                    <option value={ThinkModel.Claude}>Claude</option>
-                                    <option value={ThinkModel.GPT}>GPT</option>
-                                </select>
-                            </label>
-                            <label>
-                                Voice
-                                <select
-                                    name="speech"
-                                    value={speechModel}
-                                    onChange={(e) => setSpeechModel(e.target.value as SpeechModel)}
-                                >
-                                    <option value={SpeechModel.Thalia}>Thalia</option>
-                                    <option value={SpeechModel.Andromeda}>Andromeda</option>
-                                    <option value={SpeechModel.Helena}>Helena</option>
-                                    <option value={SpeechModel.Apollo}>Apollo</option>
-                                    <option value={SpeechModel.Arcas}>Arcas</option>
-                                    <option value={SpeechModel.Aries}>Aries</option>
-                                </select>
-                            </label>
-                            <button type="button" onClick={connect}>
-                                Connect
-                            </button>
-                        </form>
+                        <div className={styles.statusMessage}>
+                            {isConnecting ? "Connecting to your voice agent…" : "Preparing voice session…"}
+                        </div>
+                        {!isConnecting && error && (
+                            <div className={styles.authActions}>
+                                <button className={styles.primaryButton} onClick={connect}>
+                                    Retry Connection
+                                </button>
+                            </div>
+                        )}
                     </section>
                 )}
 

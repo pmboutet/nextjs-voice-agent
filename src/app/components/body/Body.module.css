@@ -34,6 +34,12 @@
     gap: var(--dg-space-5);
 }
 
+.statusMessage {
+    text-align: center;
+    color: var(--dg-text-secondary);
+    font-size: var(--dg-text-base);
+}
+
 .authActions {
     display: flex;
     justify-content: center;
