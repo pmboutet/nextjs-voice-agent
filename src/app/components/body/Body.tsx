@@ -2,7 +2,7 @@
 
 import { ListenModel, SpeechModel, ThinkModel } from "@/app/lib/Models"
 import { Mic } from "../mic/Mic";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
 import { AgentEvents, DeepgramClient, type AgentLiveClient } from "@deepgram/sdk";
 import { voiceAgentLog } from "@/app/lib/Logger";
 import styles from "./Body.module.css";
@@ -17,13 +17,11 @@ export const Body = () => {
     const [error, setError] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
-    const [autoConnect, setAutoConnect] = useState<boolean>(true);
-    const [authInProgress, setAuthInProgress] = useState<boolean>(false);
 
     // Agent configuration
-    const listenModel: ListenModel = ListenModel.General;
-    const thinkModel: ThinkModel = ThinkModel.Claude;
-    const speechModel: SpeechModel = SpeechModel.Thalia;
+    const [listenModel, setListenModel] = useState<ListenModel>(ListenModel.General);
+    const [thinkModel, setThinkModel] = useState<ThinkModel>(ThinkModel.Claude);
+    const [speechModel, setSpeechModel] = useState<SpeechModel>(SpeechModel.Thalia);
 
     // Client and conversation state
     const [client, setClient] = useState<AgentLiveClient | null>(null);
@@ -68,9 +66,7 @@ export const Body = () => {
     };
 
     // === AUTHENTICATION ===
-    const authenticate = useCallback(() => {
-        setAuthInProgress(true);
-        setError(null);
+    const authenticate = () => {
         voiceAgentLog.auth("Starting authentication process...");
         fetch("/api/token", {
             method: "GET",
@@ -82,21 +78,16 @@ export const Body = () => {
                 const data = await response.json();
                 voiceAgentLog.auth("Authentication successful - Token received and stored");
                 setToken(data.token);
-                setAuthInProgress(false);
             } else {
                 const errorText = await response.text();
                 voiceAgentLog.error(`Authentication failed: ${errorText}`);
                 setError(`Authentication failed: ${errorText}`);
-                setAutoConnect(false);
-                setAuthInProgress(false);
             }
         }).catch((error) => {
             voiceAgentLog.error(`Authentication failed: ${error.message}`);
             setError(`Authentication failed: ${error.message}`);
-            setAutoConnect(false);
-            setAuthInProgress(false);
         })
-    }, []);
+    }
 
     // === CONNECTION MANAGEMENT ===
     const disconnect = () => {
@@ -131,8 +122,6 @@ export const Body = () => {
         setToken(null);
         setError(null);
         setTranscript([]);
-        setAutoConnect(false);
-        setAuthInProgress(false);
 
         // Clear audio queue and reset timing
         audioQueueRef.current = [];
@@ -141,7 +130,7 @@ export const Body = () => {
         console.log("🧹 CLEANUP: All state cleared, ready for new connection");
     }
 
-    const connect = useCallback(() => {
+    const connect = () => {
         if (!token) {
             setError("No token available. Please authenticate first.");
             return;
@@ -167,7 +156,7 @@ export const Body = () => {
                     }
                 },
                 agent: {
-                    greeting: "hey! So you've just downloaded the Nuffield Health app. I'm curious, why?",
+                    greeting: "Welcome to the Next.js Voice Agent Demo. How can I assist you today?",
                     listen: {
                         provider: {
                             type: "deepgram",
@@ -312,25 +301,13 @@ export const Body = () => {
         });
 
         client.on(AgentEvents.AgentStartedSpeaking, (data) => {
-                    voiceAgentLog.agentEvent("AgentStartedSpeaking - Agent began response", data);
-                });
+            voiceAgentLog.agentEvent("AgentStartedSpeaking - Agent began response", data);
+        });
 
-                client.on(AgentEvents.Close, (closeEvent) => {
-                    voiceAgentLog.connection("Agent connection closed", closeEvent);
-                });
-    }, [token, listenModel, speechModel, thinkModel]);
-
-    useEffect(() => {
-        if (autoConnect && !token && !authInProgress && !error) {
-            authenticate();
-        }
-    }, [autoConnect, token, authInProgress, error, authenticate]);
-
-    useEffect(() => {
-        if (autoConnect && token && !connected && !client) {
-            connect();
-        }
-    }, [autoConnect, token, connected, client, connect]);
+        client.on(AgentEvents.Close, (closeEvent) => {
+            voiceAgentLog.connection("Agent connection closed", closeEvent);
+        });
+    }
 
     // === UI RENDER ===
     return (
@@ -342,34 +319,60 @@ export const Body = () => {
                     </div>
                 )}
 
-                {autoConnect && !token && (
+                {!token && (
                     <section className={styles.panel}>
-                        <div className={styles.empty}>
-                            {authInProgress ? "Requesting access token..." : "Token unavailable. Retrying..."}
+                        <div className={styles.authActions}>
+                            <button className={styles.primaryButton} onClick={authenticate}>
+                                Authenticate
+                            </button>
                         </div>
                     </section>
                 )}
 
-                {token && !connected && autoConnect && (
+                {token && !connected && (
                     <section className={styles.panel}>
-                        <div className={styles.empty}>
-                            {client ? "Preparing connection..." : "Connecting to voice agent..."}
-                        </div>
-                    </section>
-                )}
-
-                {!connected && !autoConnect && (
-                    <section className={styles.panel}>
-                        <button
-                            type="button"
-                            className={styles.primaryButton}
-                            onClick={() => {
-                                setError(null);
-                                setAutoConnect(true);
-                            }}
-                        >
-                            Reconnect
-                        </button>
+                        <form className={styles.form}>
+                            <label>
+                                Listen
+                                <select
+                                    name="listen"
+                                    value={listenModel}
+                                    onChange={(e) => setListenModel(e.target.value as ListenModel)}
+                                >
+                                    <option value={ListenModel.General}>General Purpose</option>
+                                    <option value={ListenModel.Medical}>Medical</option>
+                                </select>
+                            </label>
+                            <label>
+                                Think
+                                <select
+                                    name="think"
+                                    value={thinkModel}
+                                    onChange={(e) => setThinkModel(e.target.value as ThinkModel)}
+                                >
+                                    <option value={ThinkModel.Claude}>Claude</option>
+                                    <option value={ThinkModel.GPT}>GPT</option>
+                                </select>
+                            </label>
+                            <label>
+                                Voice
+                                <select
+                                    name="speech"
+                                    value={speechModel}
+                                    onChange={(e) => setSpeechModel(e.target.value as SpeechModel)}
+                                >
+                                    <option value={SpeechModel.Thalia}>Thalia</option>
+                                    <option value={SpeechModel.Andromeda}>Andromeda</option>
+                                    <option value={SpeechModel.Helena}>Helena</option>
+                                    <option value={SpeechModel.Apollo}>Apollo</option>
+                                    <option value={SpeechModel.Arcas}>Arcas</option>
+                                    <option value={SpeechModel.Aries}>Aries</option>
+                                </select>
+                            </label>
+                            <button type="button" onClick={connect}>
+                                Connect
+                            </button>
+                        </form>
                     </section>
                 )}
 
