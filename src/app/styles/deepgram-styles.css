@@ -1,37 +1,37 @@
 /**
- * Deepgram Design Tokens - Essential CSS Variables
+ * Nuffield Health themed design tokens
  *
  * Contains all the design tokens (CSS variables) needed for consistent styling
  */
 
 :root {
     /* Primary Colors */
-    --dg-primary: #13ef93;
-    --dg-primary-light: #a1f9d4;
-    --dg-primary-dark: #075433;
-    --dg-primary-hover: #075433;
+    --dg-primary: #009639;
+    --dg-primary-light: #51c97a;
+    --dg-primary-dark: #006b2d;
+    --dg-primary-hover: #007f33;
 
     /* Secondary Colors */
-    --dg-secondary: #149afb;
-    --dg-secondary-hover: #1184d4;
+    --dg-secondary: #5f6afc;
+    --dg-secondary-hover: #4953e0;
 
     /* Semantic Colors */
-    --dg-success: #12b76a;
+    --dg-success: #31c48d;
     --dg-warning: #fec84b;
-    --dg-danger: #f04438;
+    --dg-danger: #ff6d6d;
 
     /* Neutral Colors */
     --dg-white: #ffffff;
-    --dg-background: #0b0b0c;
-    --dg-surface: #232329;
-    --dg-surface-elevated: #2c2c33;
-    --dg-border: #4e4e52;
-    --dg-border-light: #949498;
-    --dg-text-primary: #ffffff;
-    --dg-text-secondary: #ededf2;
-    --dg-text-muted: #e1e1e5;
-    --dg-text-disabled: #bbbbbf;
-    --dg-text-inverse: #1a1a1f;
+    --dg-background: #0b1020;
+    --dg-surface: #141b2f;
+    --dg-surface-elevated: #1a2138;
+    --dg-border: #27304a;
+    --dg-border-light: #3a4564;
+    --dg-text-primary: #f4f7ff;
+    --dg-text-secondary: #c6cbea;
+    --dg-text-muted: #9aa2c5;
+    --dg-text-disabled: #6f789c;
+    --dg-text-inverse: #05070f;
 
     /* Typography */
     --dg-font-family-body: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -70,9 +70,9 @@
     --dg-radius-xl: 0.375rem;  /* 6px */
 
     /* Shadows */
-    --dg-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --dg-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --dg-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --dg-shadow-sm: 0 10px 25px rgb(0 0 0 / 0.25);
+    --dg-shadow-md: 0 18px 40px rgb(0 0 0 / 0.28);
+    --dg-shadow-lg: 0 24px 60px rgb(0 0 0 / 0.32);
 
     /* Transitions */
     --dg-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -104,7 +104,7 @@ body {
 
 .dg-hero-title {
     font-family: var(--font-noto);
-    background: linear-gradient(135deg, var(--dg-white) 0%, var(--dg-secondary) 50%, var(--dg-primary) 100%);
+    background: radial-gradient(circle at top left, var(--dg-primary) 0%, var(--dg-secondary) 55%, var(--dg-white) 110%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

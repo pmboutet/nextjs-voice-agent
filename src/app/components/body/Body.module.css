@@ -1,0 +1,120 @@
+.conversationOuter {
+    border-radius: 18px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 150, 57, 0.45), rgba(95, 106, 252, 0.45));
+    box-shadow: var(--dg-shadow-md);
+}
+
+.conversationInner {
+    background: radial-gradient(circle at top left, rgba(0, 16, 32, 0.85), rgba(20, 27, 47, 0.95));
+    border-radius: 17px;
+    padding: var(--dg-space-4);
+    max-height: 320px;
+    min-height: 160px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--dg-space-4);
+}
+
+.conversationInner::-webkit-scrollbar {
+    width: 8px;
+}
+
+.conversationInner::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.conversationInner::-webkit-scrollbar-thumb {
+    background: rgba(95, 106, 252, 0.4);
+    border-radius: 9999px;
+}
+
+.emptyState {
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(95, 106, 252, 0.15), rgba(0, 150, 57, 0.15));
+    border: 1px dashed rgba(95, 106, 252, 0.35);
+    padding: var(--dg-space-4);
+    text-align: center;
+    color: var(--dg-text-secondary);
+    font-style: italic;
+}
+
+.message {
+    border-radius: 16px;
+    padding: var(--dg-space-4);
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: var(--dg-space-2);
+    position: relative;
+    backdrop-filter: blur(12px);
+}
+
+.messageUser {
+    background: linear-gradient(135deg, rgba(0, 150, 57, 0.3), rgba(0, 150, 57, 0.08));
+    border-color: rgba(0, 150, 57, 0.45);
+    box-shadow: 0 14px 30px rgba(0, 150, 57, 0.2);
+}
+
+.messageAgent {
+    background: linear-gradient(135deg, rgba(95, 106, 252, 0.24), rgba(10, 17, 40, 0.9));
+    border-color: rgba(95, 106, 252, 0.5);
+    box-shadow: 0 14px 34px rgba(95, 106, 252, 0.22);
+}
+
+.messageLabel {
+    font-size: var(--dg-text-xs);
+    font-weight: var(--dg-font-weight-semibold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dg-space-2);
+}
+
+.messageUser .messageLabel {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.messageAgent .messageLabel {
+    color: rgba(198, 203, 234, 0.9);
+}
+
+.messageLabel::before {
+    content: "";
+    display: inline-flex;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.messageUser .messageLabel::before {
+    background: var(--dg-primary);
+    box-shadow: 0 0 14px rgba(0, 150, 57, 0.75);
+}
+
+.messageAgent .messageLabel::before {
+    background: rgba(95, 106, 252, 0.85);
+    box-shadow: 0 0 14px rgba(95, 106, 252, 0.55);
+}
+
+.messageText {
+    font-size: var(--dg-text-base);
+    line-height: 1.6;
+    color: var(--dg-text-secondary);
+}
+
+.messageUser .messageText {
+    color: var(--dg-white);
+}
+
+.messageAgent .messageText strong,
+.messageUser .messageText strong {
+    color: var(--dg-white);
+}
+
+.messageAgent .messageText em,
+.messageUser .messageText em {
+    color: var(--dg-text-secondary);
+}

@@ -5,6 +5,7 @@ import { Mic } from "../mic/Mic";
 import { useState, useRef } from "react";
 import { AgentEvents, DeepgramClient, type AgentLiveClient } from "@deepgram/sdk";
 import { voiceAgentLog } from "@/app/lib/Logger";
+import styles from "./Body.module.css";
 
 /**
  * Main voice agent interface component
@@ -311,7 +312,7 @@ export const Body = () => {
     return (
         <main className="dg-section dg-text-center">
             <div className="dg-hero-title">
-                Next.js Voice Agent
+                Nuffield Health Voice Agent
             </div>
 
             {error && (
@@ -326,10 +327,10 @@ export const Body = () => {
                 <div className="dg-card">
                     <h2 className="dg-section-heading">Welcome</h2>
                     <p className="dg-status dg-status--info">
-                        Click the button below to authenticate with Deepgram and start your voice conversation.
+                        Click the button below to authenticate and start your voice conversation with the Nuffield experience.
                     </p>
                     <button className="btn btn--primary btn--large" onClick={authenticate}>
-                        🔐 Authenticate with Deepgram
+                        🔐 Authenticate
                     </button>
                 </div>
             )}
@@ -406,37 +407,27 @@ export const Body = () => {
                     </div>
 
                     <div className="dg-card">
-                        <h2 className="dg-section-heading">Conversation Transcript</h2>
-                        <div className="dg-card dg-card--compact" style={{
-                            maxHeight: '300px',
-                            overflowY: 'auto',
-                            textAlign: 'left',
-                            minHeight: '150px'
-                        }}>
-                            {transcript.length === 0 ? (
-                                <div className="dg-status dg-status--info">
-                                    <em>Conversation will appear here...</em>
-                                </div>
-                            ) : (
-                                transcript.map((message, index) => (
-                                    <div key={index} className="dg-card dg-card--compact" style={{
-                                        marginBottom: 'var(--dg-space-3)',
-                                        backgroundColor: message.role === 'user'
-                                            ? 'rgba(19, 239, 147, 0.1)'
-                                            : 'rgba(20, 154, 251, 0.1)',
-                                        borderColor: message.role === 'user'
-                                            ? 'var(--dg-primary)'
-                                            : 'var(--dg-secondary)'
-                                    }}>
-                                        <strong style={{ color: message.role === 'user' ? 'var(--dg-primary)' : 'var(--dg-secondary)' }}>
-                                            {message.role === 'user' ? '🗣️ You' : '🤖 Assistant'}:
-                                        </strong>
-                                        <div style={{ marginTop: 'var(--dg-space-2)' }}>
-                                            {message.content}
-                                        </div>
+                        <h2 className="dg-section-heading">Conversation Timeline</h2>
+                        <div className={styles.conversationOuter}>
+                            <div className={styles.conversationInner}>
+                                {transcript.length === 0 ? (
+                                    <div className={styles.emptyState}>
+                                        <em>Conversation will appear here...</em>
                                     </div>
-                                ))
-                            )}
+                                ) : (
+                                    transcript.map((message, index) => (
+                                        <div
+                                            key={index}
+                                            className={`${styles.message} ${message.role === 'user' ? styles.messageUser : styles.messageAgent}`}
+                                        >
+                                            <span className={styles.messageLabel}>
+                                                {message.role === 'user' ? '🗣️ You' : '🤖 Assistant'}
+                                            </span>
+                                            <div className={styles.messageText}>{message.content}</div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
                         </div>
                     </div>
                 </>

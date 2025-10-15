@@ -9,13 +9,13 @@ export const Nav = () => {
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
           <Image
-            src="assets/dg.svg"
+            src="assets/nuffield-logo.svg"
             className={styles.logoImage}
-            alt="Deepgram Logo"
-            width="165"
-            height="32"
+            alt="Nuffield Health Logo"
+            width="180"
+            height="40"
           />
-          <div className={styles.logoText}>Starter Apps</div>
+          <div className={styles.logoText}>Voice Agent Studio</div>
         </Link>
 
         <ButtonLink url="https://github.com/deepgram-starters" size="large">

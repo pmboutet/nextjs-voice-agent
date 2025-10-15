@@ -10,8 +10,8 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js Voice Agent - Deepgram",
-  description: "Real-time voice agent powered by Deepgram's speech-to-text and text-to-speech technology",
+  title: "Nuffield Health Voice Agent",
+  description: "Real-time conversational experience presented with Nuffield Health branding",
 };
 
 export const viewport: Viewport = {
