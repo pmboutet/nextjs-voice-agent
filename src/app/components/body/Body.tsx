@@ -185,9 +185,10 @@ export const Body = () => {
                             type: thinkModel === ThinkModel.Claude ? "anthropic" : "open_ai",
                         },
                         model: thinkModel,
-                        "instructions": "You are a friendly virtual sports coach talking with a new user. Start by asking why they opened the app today. Then ask a few short questions about their exercise habits to understand their goals. If they want to work out now, offer a simple workout routine. If they’re not available, ask when would be a good time and set a reminder. When they complete a workout, congratulate them and mention that the nearest gym is about 10 minutes away. Offer to connect them with Barnie, a coach available weekday mornings for a free introductory session, and help them choose a day that works."
+                        instructions: "You are a friendly virtual sports coach talking with a new user. Start by asking why they opened the app today. Then ask a few short questions about their exercise habits to understand their goals. If they want to work out now, offer a simple workout routine. If they're not available, ask when would be a good time and set a reminder. When they complete a workout, congratulate them and mention that the nearest gym is about 10 minutes away. Offer to connect them with Barnie, a coach available weekday mornings for a free introductory session, and help them choose a day that works."
+                    }
                 }
-            }
+            };
             voiceAgentLog.agentEvent("Applying agent configuration", settings);
             client.configure(settings)
         })
