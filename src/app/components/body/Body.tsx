@@ -73,6 +73,7 @@ export const Body = () => {
     const nextStartTimeRef = useRef<number>(0);
     const audioQueueRef = useRef<Uint8Array[]>([]);
     const isPausedRef = useRef<boolean>(false);
+    const seenImagesRef = useRef<Set<string>>(new Set());
 
     // Initialize or get audio context
     const getAudioContext = async (): Promise<AudioContext> => {
@@ -163,6 +164,7 @@ export const Body = () => {
         setError(null);
         setTranscript([]);
         setIsPaused(false);
+        seenImagesRef.current.clear();
 
         // Clear audio queue and reset timing
         audioQueueRef.current = [];
@@ -329,10 +331,11 @@ export const Body = () => {
             voiceAgentLog.conversation(`${message.role.toUpperCase()}: "${message.content}"`, message);
             setTranscript(prev => {
                 const image = message.role !== "user" ? getImageForAgentContent(message.content) : undefined;
-                const nextMessage: TranscriptMessage = image
-                    ? { role: message.role, content: message.content, image }
-                    : { role: message.role, content: message.content };
-                return [...prev, nextMessage];
+                if (image && !seenImagesRef.current.has(image.src)) {
+                    seenImagesRef.current.add(image.src);
+                    return [...prev, { role: message.role, content: message.content, image }];
+                }
+                return [...prev, { role: message.role, content: message.content }];
             });
         })
 
