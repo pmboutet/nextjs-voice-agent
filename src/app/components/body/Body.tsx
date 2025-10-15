@@ -156,11 +156,7 @@ export const Body = () => {
                     }
                 },
                 agent: {
-<<<<<<< HEAD
-                    greeting: "Welcome to the Next.js Voice Agent Demo. How can I assist you today?",
-=======
                     greeting: "hey! So you've just downloaded the Nuffield Health app. I'm curious, why?",
->>>>>>> parent of 530a130 (Add detailed agent instruction for virtual coach)
                     listen: {
                         provider: {
                             type: "deepgram",
