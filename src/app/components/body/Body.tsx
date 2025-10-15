@@ -2,7 +2,7 @@
 
 import { ListenModel, SpeechModel, ThinkModel } from "@/app/lib/Models"
 import { Mic } from "../mic/Mic";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { AgentEvents, DeepgramClient, type AgentLiveClient } from "@deepgram/sdk";
 import { voiceAgentLog } from "@/app/lib/Logger";
 import styles from "./Body.module.css";
@@ -27,12 +27,14 @@ export const Body = () => {
     const [client, setClient] = useState<AgentLiveClient | null>(null);
     const [transcript, setTranscript] = useState<Array<{ role: string, content: string }>>([]);
     const [isAgentSpeaking, setIsAgentSpeaking] = useState<boolean>(false);
+    const [isPaused, setIsPaused] = useState<boolean>(false);
 
     // Audio playback management refs
     const audioContextRef = useRef<AudioContext | null>(null);
     const currentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
     const nextStartTimeRef = useRef<number>(0);
     const audioQueueRef = useRef<Uint8Array[]>([]);
+    const isPausedRef = useRef<boolean>(false);
 
     // Initialize or get audio context
     const getAudioContext = async (): Promise<AudioContext> => {
@@ -42,7 +44,7 @@ export const Body = () => {
         }
 
         // Resume audio context if suspended (required for modern browsers)
-        if (audioContextRef.current.state === 'suspended') {
+        if (audioContextRef.current.state === 'suspended' && !isPausedRef.current) {
             await audioContextRef.current.resume();
             console.log("▶️ AUDIO: Resumed AudioContext after user interaction");
         }
@@ -122,6 +124,7 @@ export const Body = () => {
         setToken(null);
         setError(null);
         setTranscript([]);
+        setIsPaused(false);
 
         // Clear audio queue and reset timing
         audioQueueRef.current = [];
@@ -309,6 +312,57 @@ export const Body = () => {
         });
     }
 
+    const togglePause = useCallback(async () => {
+        const audioContext = audioContextRef.current;
+        if (!audioContext) {
+            return;
+        }
+
+        try {
+            if (audioContext.state === "suspended") {
+                await audioContext.resume();
+                setIsPaused(false);
+                console.log("▶️ AUDIO: Resumed playback via spacebar");
+            } else if (audioContext.state === "running") {
+                await audioContext.suspend();
+                setIsPaused(true);
+                console.log("⏸️ AUDIO: Paused playback via spacebar");
+            }
+        } catch (error) {
+            console.error("❌ AUDIO: Failed to toggle pause state", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        isPausedRef.current = isPaused;
+    }, [isPaused]);
+
+    useEffect(() => {
+        if (!connected) {
+            return;
+        }
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.code !== "Space" && event.key !== " ") {
+                return;
+            }
+
+            const target = event.target as HTMLElement | null;
+            if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+                return;
+            }
+
+            event.preventDefault();
+            void togglePause();
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [connected, togglePause]);
+
     // === UI RENDER ===
     return (
         <main className={styles.main}>
@@ -378,6 +432,11 @@ export const Body = () => {
 
                 {connected && (
                     <section className={styles.chatPanel}>
+                        {isPaused && (
+                            <div className={styles.pauseOverlay}>
+                                <span>Paused</span>
+                            </div>
+                        )}
                         <div className={styles.toolbar}>
                             <Mic state={micState} client={client} onError={setError} />
                             <button
