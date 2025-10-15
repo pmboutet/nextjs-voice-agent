@@ -168,7 +168,6 @@ export const Body = () => {
                 },
                 agent: {
                     greeting: "hey! So you've just downloaded the Nuffield Health app. I'm curious, why?",
-                    instruction: "You are a virtual sports coach engaging with a user who just installed your fitness app. Start by asking them why they decided to connect today. Then ask a few questions about their physical activity to get a general sense of their routine. Once you have some basic answers, offer them a quick workout session. If they're not available right now, ask for a convenient time and set a reminder. If they finish a workout, congratulate them and let them know that the nearest gym is just 10 minutes away. Suggest meeting a coach named Barnie, who is available every weekday morning for a free introductory session. Work with the user to find a morning that suits them between Monday and Friday.",
                     listen: {
                         provider: {
                             type: "deepgram",
@@ -184,8 +183,9 @@ export const Body = () => {
                     think: {
                         provider: {
                             type: thinkModel === ThinkModel.Claude ? "anthropic" : "open_ai",
-                            model: thinkModel
-                        }
+                        },
+                        model: thinkModel,
+                        instructions: "You are a virtual sports coach engaging with a user who just installed your fitness app. Start by asking them why they decided to connect today. Then ask a few questions about their physical activity to get a general sense of their routine. Once you have some basic answers, offer them a quick workout session. If they're not available right now, ask for a convenient time and set a reminder. If they finish a workout, congratulate them and let them know that the nearest gym is just 10 minutes away. Suggest meeting a coach named Barnie, who is available every weekday morning for a free introductory session. Work with the user to find a morning that suits them between Monday and Friday."
                     }
                 }
             }
