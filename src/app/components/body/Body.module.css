@@ -230,6 +230,21 @@
 
 .text {
     font-size: var(--dg-text-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--dg-space-3);
+}
+
+.messageImage {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(95, 106, 252, 0.35);
+}
+
+.messageImage img {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 @media (max-width: 768px) {

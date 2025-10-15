@@ -1,11 +1,49 @@
 "use client";
 
-import { ListenModel, SpeechModel, ThinkModel } from "@/app/lib/Models"
+import Image from "next/image";
+import { ListenModel, SpeechModel, ThinkModel } from "@/app/lib/Models";
 import { Mic } from "../mic/Mic";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { AgentEvents, DeepgramClient, type AgentLiveClient } from "@deepgram/sdk";
 import { voiceAgentLog } from "@/app/lib/Logger";
 import styles from "./Body.module.css";
+
+type AgentImage = {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+};
+
+type TranscriptMessage = {
+    role: string;
+    content: string;
+    image?: AgentImage;
+};
+
+const getImageForAgentContent = (content: string): AgentImage | undefined => {
+    const normalized = content.toLowerCase();
+
+    if (normalized.includes("congratulation")) {
+        return {
+            src: "/assets/congratulation.png",
+            alt: "Celebratory confetti illustration",
+            width: 256,
+            height: 256,
+        };
+    }
+
+    if (normalized.includes("coach barnie")) {
+        return {
+            src: "/assets/barnie.png",
+            alt: "Coach Barnie promotion",
+            width: 256,
+            height: 146,
+        };
+    }
+
+    return undefined;
+};
 
 /**
  * Main voice agent interface component
@@ -25,7 +63,7 @@ export const Body = () => {
 
     // Client and conversation state
     const [client, setClient] = useState<AgentLiveClient | null>(null);
-    const [transcript, setTranscript] = useState<Array<{ role: string, content: string }>>([]);
+    const [transcript, setTranscript] = useState<TranscriptMessage[]>([]);
     const [isAgentSpeaking, setIsAgentSpeaking] = useState<boolean>(false);
     const [isPaused, setIsPaused] = useState<boolean>(false);
 
@@ -289,7 +327,13 @@ export const Body = () => {
         }
         client.on(AgentEvents.ConversationText, (message) => {
             voiceAgentLog.conversation(`${message.role.toUpperCase()}: "${message.content}"`, message);
-            setTranscript(prev => [...prev, { role: message.role, content: message.content }]);
+            setTranscript(prev => {
+                const image = message.role !== "user" ? getImageForAgentContent(message.content) : undefined;
+                const nextMessage: TranscriptMessage = image
+                    ? { role: message.role, content: message.content, image }
+                    : { role: message.role, content: message.content };
+                return [...prev, nextMessage];
+            });
         })
 
         // === EVENT HANDLERS ===
@@ -463,7 +507,20 @@ export const Body = () => {
                                             <span className={styles.label}>
                                                 {message.role === 'user' ? 'You' : 'Assistant'}
                                             </span>
-                                            <div className={styles.text}>{message.content}</div>
+                                            <div className={styles.text}>
+                                                {message.content}
+                                                {message.image && (
+                                                    <div className={styles.messageImage}>
+                                                        <Image
+                                                            src={message.image.src}
+                                                            alt={message.image.alt}
+                                                            width={message.image.width}
+                                                            height={message.image.height}
+                                                            sizes="(max-width: 768px) 80vw, 320px"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     ))
                                 )}
