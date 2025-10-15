@@ -8,7 +8,7 @@ export const Nav = () => {
       <div className={styles.container}>
         <Link href="/" className={styles.logo} aria-label="Nuffield Health">
           <Image
-            src="assets/nuffield-logo-inverse.svg"
+            src="https://www.nuffieldhealth.com/assets/dist/images/logo_inverse.svg"
             className={styles.logoImage}
             alt="Nuffield Health Logo"
             width={180}
