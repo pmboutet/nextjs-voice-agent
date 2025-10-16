@@ -96,6 +96,11 @@ If you see "48kHz" in the browser logs when using Firefox, this is expected beha
 ```bash
 npm test
 ```
+
+## Deployment
+
+Refer to `docs/deployment/heroku.md` for step-by-step instructions covering both Heroku and Vercel deployments.
+
 ## Getting Help
 
 We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
